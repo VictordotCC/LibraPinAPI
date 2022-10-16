@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-from numpy import delete
 db = SQLAlchemy()
 
 class Usuario(db.Model):
