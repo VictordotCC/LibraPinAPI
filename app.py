@@ -1,3 +1,5 @@
+from crypt import methods
+import email
 import os
 from datetime import datetime
 from flask import Flask, request, jsonify
@@ -23,7 +25,14 @@ Migrate(app, db)
 #Definir rutas
 
 # Obtener/Crear/Actualizar/Eliminar usuarios
-
+@app.route('/login', methods=['POST'])
+@cross_origin()
+def login():
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
+    user = Usuario.query.filter_by(email=email, password=password).first()
+    if user:
+        return jsonify(user.serialize()), 200
 
 #Buscar por ID o Nombre?
 @app.route('/usuario/<id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
