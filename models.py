@@ -7,14 +7,13 @@ class Usuario(db.Model):
     nombre = db.Column(db.String(50), nullable=False)
     correo = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
-    imagen = db.Column(db.String(250), nullable=False)
+    imagen = db.Column(db.String(250), nullable=True)
 
     def serialize(self):
         return {
             "id": self.id,
             "nombre": self.nombre,
             "correo": self.correo,
-            "password": self.password,
             "imagen": self.imagen
         }
     

@@ -36,9 +36,12 @@ def usuario(id):
         nombre = request.json.get('nombre', None)
         correo = request.json.get('correo', None)
         password = request.json.get('password', None)
-        usuario = Usuario(nombre=nombre, correo=correo, password=password)
-        usuario.save()
-        return jsonify(usuario.serialize()), 200
+        if (Usuario.query.filter_by(correo=correo).first() is None and 
+            Usuario.query.filter_by(nombre=nombre).first() is None):
+            usuario = Usuario(nombre=nombre, correo=correo, password=password)
+            usuario.save()
+            return jsonify(usuario.serialize()), 200
+        return jsonify({"error": "El usuario/correo ya existe"}), 400
     elif request.method == 'PUT':
         nombre = request.json.get('nombre', None)
         correo = request.json.get('correo', None)
