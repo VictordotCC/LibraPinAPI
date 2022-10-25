@@ -10,7 +10,6 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.url_map.strict_slashes = False
 
 app.config['DEBUG'] = True
 app.config['ENV'] = 'development'
@@ -21,15 +20,13 @@ db.init_app(app)
 
 Migrate(app, db)
 
-#Definir rutas
-
-# Obtener/Crear/Actualizar/Eliminar usuarios
 @app.route('/login', methods=['POST'])
 @cross_origin()
 def login():
-    email = request.json.get('email', None)
+    email = request.json.get('correo', None)
     password = request.json.get('password', None)
-    user = Usuario.query.filter_by(email=email, password=password).first()
+
+    user = Usuario.query.filter_by(correo=email, password=password).first()
     if user:
         return jsonify(user.serialize()), 200
     else:
