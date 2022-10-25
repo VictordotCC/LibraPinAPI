@@ -1,4 +1,3 @@
-from crypt import methods
 import email
 import os
 from datetime import datetime
@@ -33,6 +32,9 @@ def login():
     user = Usuario.query.filter_by(email=email, password=password).first()
     if user:
         return jsonify(user.serialize()), 200
+    else:
+        return jsonify({"error": "Credenciales inválidas"}), 403
+    
 
 #Buscar por ID o Nombre?
 @app.route('/usuario/<id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
