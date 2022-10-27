@@ -7,8 +7,10 @@ from flask_cors import CORS, cross_origin
 
 # 3. instanciamos la app
 app = Flask(__name__)
+
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'Content-Type', 'Access-Control-Allow-Origin'
+
 
 app.config['DEBUG'] = True
 app.config['ENV'] = 'development'
@@ -20,10 +22,10 @@ db.init_app(app)
 Migrate(app, db)
 
 @app.route('/login', methods=['POST'])
-@cross_origin()
+@cross_origin('Access-Control-Allow-Origin')
 def login():
-    email = request.json.get('correo', None)
-    password = request.json.get('password', None)
+    email = request.json.get('correo')
+    password = request.json.get('password')
 
     user = Usuario.query.filter_by(correo=email, password=password).first()
     if user:
@@ -169,4 +171,4 @@ def tag(id):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=8000, debug=True)
