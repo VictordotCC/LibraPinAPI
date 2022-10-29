@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/597d1aa5-5a2c-4187-9d05-a61e1b0f1784/appservices/subscriptions/597d1aa5-5a2c-4187-9d05-a61e1b0f1784/resourceGroups/LibrapinAPI2/providers/Microsoft.Web/sites/LibrapinAPI",
+    "appService.deploySubpath": "."
+}

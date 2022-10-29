@@ -9,7 +9,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type', 'Access-Control-Allow-Origin'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 app.config['DEBUG'] = True
@@ -21,8 +21,8 @@ db.init_app(app)
 
 Migrate(app, db)
 
+@cross_origin
 @app.route('/login', methods=['POST'])
-@cross_origin('Access-Control-Allow-Origin')
 def login():
     email = request.json.get('correo')
     password = request.json.get('password')
