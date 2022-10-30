@@ -29,9 +29,9 @@ def login():
 
     user = Usuario.query.filter_by(correo=email, password=password).first()
     if user:
-        return jsonify(user.serialize()), 200
+        return jsonify(data=user.serialize(), status=200), 200
     else:
-        return jsonify({"error": "Credenciales inválidas"}), 403
+        return jsonify(data="Credenciales inválidas", status=403), 403
     
 
 #Buscar por ID o Nombre?
@@ -49,8 +49,8 @@ def usuario(id):
             Usuario.query.filter_by(nombre=nombre).first() is None):
             usuario = Usuario(nombre=nombre, correo=correo, password=password)
             usuario.save()
-            return jsonify(usuario.serialize()), 200
-        return jsonify({"error": "El usuario/correo ya existe"}), 400
+            return jsonify(data=usuario.serialize(), status=200), 200
+        return jsonify(data="El usuario/correo ya existe", status=400), 400
     elif request.method == 'PUT':
         nombre = request.json.get('nombre', None)
         correo = request.json.get('correo', None)
@@ -99,12 +99,13 @@ def pin(id):
         pin = Pin.query.get(id)
         return jsonify(pin.serialize()), 200
     elif request.method == 'POST':
-        nombre = request.json.get('nombre', None)
-        descripcion = request.json.get('descripcion', None)
+        titulo = request.json.get('titulo', None)
+        contenido = request.json.get('contenido', None)
         imagen = request.json.get('imagen', None)
-        pin = Pin(nombre=nombre, descripcion=descripcion, imagen=imagen)
+        usuario = request.json.get('usuario', None)
+        pin = Pin(titulo=titulo, contenido=contenido, imagen=imagen, usuario_id=usuario)
         pin.save()
-        return jsonify(pin.serialize()), 200
+        return jsonify(data=pin.serialize(), status=200), 200
     elif request.method == 'PUT':
         nombre = request.json.get('nombre', None)
         descripcion = request.json.get('descripcion', None)
