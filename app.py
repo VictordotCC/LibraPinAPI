@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
-from models import db, Usuario, Board, Pin, Categoria, Tag
+from models import db, Usuario, Board, Pin, Categoria, PinCategoria
 from flask_cors import CORS, cross_origin
 
 # 3. instanciamos la app
@@ -100,9 +100,9 @@ def pin(id):
         return jsonify(pin.serialize()), 200
     elif request.method == 'POST':
         titulo = request.json.get('titulo', None)
-        contenido = request.json.get('contenido', None)
+        contenido = request.json.get('descripcion', None)
         imagen = request.json.get('imagen', None)
-        usuario = request.json.get('usuario', None)
+        usuario = request.json.get('user_id', None)
         pin = Pin(titulo=titulo, contenido=contenido, imagen=imagen, usuario_id=usuario)
         pin.save()
         return jsonify(data=pin.serialize(), status=200), 200
@@ -123,10 +123,38 @@ def pin(id):
 
 # Obtener/Crear/Actualizar/Eliminar categorias
 
+@app.route('/pin-categoria', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@cross_origin()
+def pin_categoria():
+    if request.method == 'GET':
+        pin_categoria = PinCategoria.query.all()
+        return jsonify([pin_categoria.serialize() for pin_categoria in pin_categoria]), 200
+    elif request.method == 'POST':
+        pin_id = request.json.get('idPin', None)
+        categoria_id = request.json.get('idCategoria', None)
+        pin_categoria = PinCategoria(pin_id=pin_id, categoria_id=categoria_id)
+        pin_categoria.save()
+        return jsonify(data=pin_categoria.serialize(), status=200), 200
+    elif request.method == 'PUT':
+        pin_id = request.json.get('pin_id', None)
+        categoria_id = request.json.get('categoria_id', None)
+        pin_categoria = PinCategoria.query.get(id)
+        pin_categoria.pin_id = pin_id
+        pin_categoria.categoria_id = categoria_id
+        pin_categoria.update()
+        return jsonify(pin_categoria.serialize()), 200
+    elif request.method == 'DELETE':
+        pin_categoria = PinCategoria.query.get(id)
+        pin_categoria.delete()
+        return jsonify(pin_categoria.serialize()), 200
+
 @app.route('/categoria/<id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @cross_origin()
 def categoria(id):
     if request.method == 'GET':
+        if id == 'all':
+            categoria = Categoria.query.all()
+            return jsonify([categoria.serialize() for categoria in categoria]), 200
         categoria = Categoria.query.get(id)
         return jsonify(categoria.serialize()), 200
     elif request.method == 'POST':
@@ -144,30 +172,6 @@ def categoria(id):
         categoria = Categoria.query.get(id)
         categoria.delete()
         return jsonify(categoria.serialize()), 200
-
-# Obtener/Crear/Actualizar/Eliminar tags
-
-@app.route('/tag/<id>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-@cross_origin()
-def tag(id):
-    if request.method == 'GET':
-        tag = Tag.query.get(id)
-        return jsonify(tag.serialize()), 200
-    elif request.method == 'POST':
-        nombre = request.json.get('nombre', None)
-        tag = Tag(nombre=nombre)
-        tag.save()
-        return jsonify(tag.serialize()), 200
-    elif request.method == 'PUT':
-        nombre = request.json.get('nombre', None)
-        tag = Tag.query.get(id)
-        tag.nombre = nombre
-        tag.update()
-        return jsonify(tag.serialize()), 200
-    elif request.method == 'DELETE':
-        tag = Tag.query.get(id)
-        tag.delete()
-        return jsonify(tag.serialize()), 200
 
 
 
