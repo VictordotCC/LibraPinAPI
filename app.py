@@ -1,4 +1,5 @@
 import os
+import random
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
@@ -96,6 +97,10 @@ def board(id):
 @cross_origin()
 def pin(id):
     if request.method == 'GET':
+        if id == 'all':
+            pins = Pin.query.all()
+            random.shuffle(pins)
+            return jsonify([pin.serialize() for pin in pins]), 200
         pin = Pin.query.get(id)
         return jsonify(pin.serialize()), 200
     elif request.method == 'POST':
