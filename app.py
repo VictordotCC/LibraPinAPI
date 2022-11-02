@@ -55,11 +55,11 @@ def usuario(id):
     elif request.method == 'PUT':
         nombre = request.json.get('nombre', None)
         correo = request.json.get('correo', None)
-        password = request.json.get('password', None)
+        imagen = request.json.get('imagen', None)
         usuario = Usuario.query.get(id)
         usuario.nombre = nombre
         usuario.correo = correo
-        usuario.password = password
+        usuario.imagen = imagen
         usuario.update()
         return jsonify(usuario.serialize()), 200
     elif request.method == 'DELETE':
@@ -101,11 +101,11 @@ def pin(id):
             pins = Pin.query.all()
             random.shuffle(pins)
             return jsonify([pin.serialize() for pin in pins]), 200
-        pin = Pin.query.get(id)
-        return jsonify(pin.serialize()), 200
+        pin = Pin.query.filter_by(usuario_id = id).all()
+        return jsonify([pin.serialize() for pin in pin]), 200
     elif request.method == 'POST':
         titulo = request.json.get('titulo', None)
-        contenido = request.json.get('descripcion', None)
+        contenido = request.json.get('contenido', None)
         imagen = request.json.get('imagen', None)
         usuario = request.json.get('user_id', None)
         pin = Pin(titulo=titulo, contenido=contenido, imagen=imagen, usuario_id=usuario)
@@ -113,11 +113,11 @@ def pin(id):
         return jsonify(data=pin.serialize(), status=200), 200
     elif request.method == 'PUT':
         nombre = request.json.get('nombre', None)
-        descripcion = request.json.get('descripcion', None)
+        contenido = request.json.get('contenido', None)
         imagen = request.json.get('imagen', None)
         pin = Pin.query.get(id)
         pin.nombre = nombre
-        pin.descripcion = descripcion
+        pin.contenido = contenido
         pin.imagen = imagen
         pin.update()
         return jsonify(pin.serialize()), 200
@@ -160,7 +160,7 @@ def categoria(id):
         if id == 'all':
             categoria = Categoria.query.all()
             return jsonify([categoria.serialize() for categoria in categoria]), 200
-        categoria = Categoria.query.get(id)
+        categoria = Categoria.query.filter_by(nombre=id).first()
         return jsonify(categoria.serialize()), 200
     elif request.method == 'POST':
         nombre = request.json.get('nombre', None)
