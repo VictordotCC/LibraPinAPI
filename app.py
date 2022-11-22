@@ -1,5 +1,6 @@
 import os
 import random
+import base64
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
@@ -43,12 +44,15 @@ def usuario(id):
         usuario = Usuario.query.get(id)
         return jsonify(usuario.serialize()), 200
     elif request.method == 'POST':
+        with open ('placeholder.png', 'rb') as f:
+            imagen = 'data:image/jpeg;base64,' + base64.b64encode(f.read()).decode('utf-8')
+
         nombre = request.json.get('nombre', None)
         correo = request.json.get('correo', None)
         password = request.json.get('password', None)
         if (Usuario.query.filter_by(correo=correo).first() is None and 
             Usuario.query.filter_by(nombre=nombre).first() is None):
-            usuario = Usuario(nombre=nombre, correo=correo, password=password)
+            usuario = Usuario(nombre=nombre, correo=correo, password=password, imagen=imagen)
             usuario.save()
             return jsonify(data=usuario.serialize(), status=200), 200
         return jsonify(data="El usuario/correo ya existe", status=400), 400
